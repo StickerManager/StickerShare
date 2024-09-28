@@ -1,0 +1,43 @@
+name: PR Check
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-submission:
+    if: contains(github.event.pull_request.title, 'Revert') == false
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check submission folder
+      run: |
+        FILE_COUNT=$(ls submission | grep -v '.skip' | wc -l)
+        if [ $FILE_COUNT -ne 3 ]; then
+          echo "Submission folder should contain exactly two files excluding .skip." >&2
+          exit 1
+        fi
+    - name: Read metadata.json
+      id: read_metadata
+      run: |
+        SLUG=$(jq -r '.slug' submission/metadata.json)
+        echo "::set-output name=slug::$SLUG"
+
+    - name: Check if {slug}.zip exists
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        if [ ! -f "submission/${SLUG}.zip" ]; then
+          echo "${SLUG}.zip does not exist." >&2
+          exit 1
+        fi
+
+    - name: Check if package folder exists
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        if [ -d "package/${SLUG}" ]; then
+          echo "Package folder ${SLUG} already exists." >&2
+          exit 1
+        fi

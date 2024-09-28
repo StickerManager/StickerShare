@@ -1,0 +1,61 @@
+name: Merge PR
+
+on:
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  merge-submission:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'Revert') == false
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Read metadata.json
+      id: read_metadata
+      run: |
+        SLUG=$(jq -r '.slug' submission/metadata.json)
+        NAME=$(jq -r '.name' submission/metadata.json)
+        echo "::set-output name=slug::$SLUG"
+        echo "::set-output name=name::$NAME"
+
+    - name: Create package folder
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        mkdir -p package/${SLUG}
+
+    - name: Update list.json
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        COMMITTER=${GITHUB_ACTOR}
+        jq 'del(.stickers) | .submitter = env.COMMITTER' submission/metadata.json | jq --argjson newItem "$(cat -)" '. += [$newItem]' list.json > tmp.json && mv tmp.json list.json
+
+    - name: Update list.md
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        NAME=${{ steps.read_metadata.outputs.name }}
+        URL="https://github.com/StickerManager/StickerShare/blob/main/package/${SLUG}/"
+        PACKAGE="[${NAME}](${URL})"
+        AUTHOR_NAME=$(jq -r '.author.name' submission/metadata.json)
+        AUTHOR_EMAIL=$(jq -r '.author.email' submission/metadata.json)
+        AUTHOR="[${AUTHOR_NAME}](mailto:${AUTHOR_EMAIL})"
+        SUBMITTER="${GITHUB_ACTOR}"
+        echo -e "\n| ${PACKAGE} | ${AUTHOR} | ${SUBMITTER} | $(date -u) |" >> list.md
+
+    - name: Move submission to package folder
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        mv submission/metadata.json package/${SLUG}/metadata.json
+        mv submission/${SLUG}.zip package/${SLUG}/pack.zip
+
+    - name: Commit changes
+      run: |
+        SLUG=${{ steps.read_metadata.outputs.slug }}
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add package/ list.json list.md
+        git add -u submission/
+        git commit -m "Merge submission for \`${SLUG}\` by \`$GITHUB_ACTOR\`"
+        git push
