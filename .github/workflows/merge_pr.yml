@@ -38,7 +38,6 @@ jobs:
       run: |
         SLUG=${{ steps.read_metadata.outputs.slug }}
         NAME=${{ steps.read_metadata.outputs.name }}
-        COVER=${{ steps.read_metadata.outputs.cover }}
         URL="https://github.com/StickerManager/StickerShare/blob/main/package/${SLUG}/"
         PACKAGE="[${NAME}](${URL})"
         AUTHOR_NAME=$(jq -r '.author.name' submission/metadata.json)
@@ -50,6 +49,7 @@ jobs:
     - name: Move submission to package folder
       run: |
         SLUG=${{ steps.read_metadata.outputs.slug }}
+        COVER=${{ steps.read_metadata.outputs.cover }}
         mv submission/metadata.json package/${SLUG}/metadata.json
         mv submission/${SLUG}.zip package/${SLUG}/pack.zip
         mv submission/${COVER} package/${SLUG}/${COVER}
