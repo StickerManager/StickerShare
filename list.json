@@ -14,5 +14,23 @@
     "timestamp": 1727507064531,
     "md5": "363340ae595ba259529e6c1b058016d5",
     "submitter": null
+  },
+  {
+    "name": "阿米娅兔兔",
+    "slug": "amiya_tutu",
+    "description": "",
+    "created_at": "2024-10-04T17:34:27.331967",
+    "updated_at": "2024-10-04T17:34:27.331967",
+    "author": {
+      "name": "FoskyM",
+      "email": "i@fosky.top"
+    },
+    "cover": "cover.jpg",
+    "total": 29,
+    "size": 3162650,
+    "from": "StickerManager",
+    "timestamp": 1728035151867,
+    "md5": "02aaa8691096133e05838cdf2f898349",
+    "submitter": null
   }
 ]
