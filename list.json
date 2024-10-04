@@ -32,5 +32,23 @@
     "timestamp": 1728035151867,
     "md5": "02aaa8691096133e05838cdf2f898349",
     "submitter": null
+  },
+  {
+    "name": "《千恋＊万花》丛雨",
+    "slug": "Murasame",
+    "description": "丛雨厨有救了",
+    "created_at": "2024-10-04T17:42:59.491464",
+    "updated_at": "2024-10-04T17:42:59.491464",
+    "author": {
+      "name": "FoksyM",
+      "email": "i@fosky.top"
+    },
+    "cover": "cover.jpg",
+    "total": 130,
+    "size": 11310572,
+    "from": "StickerManager",
+    "timestamp": 1728035484771,
+    "md5": "ebbf435afa19a744dd4306f4711f5e0b",
+    "submitter": null
   }
 ]
