@@ -19,9 +19,11 @@ jobs:
         SLUG=$(jq -r '.slug' submission/metadata.json)
         NAME=$(jq -r '.name' submission/metadata.json)
         COVER=$(jq -r '.cover' submission/metadata.json)
+        TOTAL=$(jq -r '.total' submission/metadata.json)
         echo "::set-output name=slug::$SLUG"
         echo "::set-output name=name::$NAME"
         echo "::set-output name=cover::$COVER"
+        echo "::set-output name=total::$TOTAL"
 
     - name: Create package folder
       run: |
@@ -40,11 +42,12 @@ jobs:
         NAME=${{ steps.read_metadata.outputs.name }}
         URL="https://github.com/StickerManager/StickerShare/blob/main/package/${SLUG}/"
         PACKAGE="[${NAME}](${URL})"
+        TOTAL=${{ steps.read_metadata.outputs.total }}
         AUTHOR_NAME=$(jq -r '.author.name' submission/metadata.json)
         AUTHOR_EMAIL=$(jq -r '.author.email' submission/metadata.json)
         AUTHOR="[${AUTHOR_NAME}](mailto:${AUTHOR_EMAIL})"
         SUBMITTER="${GITHUB_ACTOR}"
-        echo -e "\n| ${PACKAGE} | ${AUTHOR} | ${SUBMITTER} | $(date -u) |" >> list.md
+        echo -e "\n| ${PACKAGE} | ${TOTAL} | ${AUTHOR} | ${SUBMITTER} | $(date -u) |" >> list.md
 
     - name: Move submission to package folder
       run: |
