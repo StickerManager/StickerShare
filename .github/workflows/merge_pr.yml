@@ -47,7 +47,7 @@ jobs:
         AUTHOR_EMAIL=$(jq -r '.author.email' submission/metadata.json)
         AUTHOR="[${AUTHOR_NAME}](mailto:${AUTHOR_EMAIL})"
         SUBMITTER="${GITHUB_ACTOR}"
-        echo -e "\n| ${PACKAGE} | ${TOTAL} | ${AUTHOR} | ${SUBMITTER} | $(date -u) |" >> list.md
+        echo -e "| ${PACKAGE} | ${TOTAL} | ${AUTHOR} | ${SUBMITTER} | $(date -u) |" >> list.md
 
     - name: Move submission to package folder
       run: |
